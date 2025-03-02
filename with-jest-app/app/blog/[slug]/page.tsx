@@ -1,32 +1,12 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-
-interface BlogPostData {
-  title: string;
+interface PageProps {
+  params: {
+    slug: string;
+  };
 }
 
-// ✅ Correction : Supprimer `PageProps` et passer `{ params }` directement
-export default function Page({ params }: { params: { slug: string } }) {
-  const { slug } = params; // ✅ params est bien défini ici
-  const [data, setData] = useState<BlogPostData | null>(null);
+// ✅ Suppression de `"use client"`, car ce fichier est un Server Component
+export default function Page({ params }: PageProps) {
+  const { slug } = params;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (slug) {
-        const response = await fetch(`/api/blog/${slug}`);
-        const result = await response.json();
-        setData(result);
-      }
-    };
-
-    fetchData();
-  }, [slug]);
-
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-
-  return <h1>{data.title}</h1>; // ✅ Vérifie bien que tu as un `<h1>`
+  return <h1>Slug: {slug}</h1>; // ✅ Affichage simple et direct
 }
