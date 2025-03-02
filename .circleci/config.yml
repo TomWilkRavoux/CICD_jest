@@ -111,6 +111,62 @@ jobs:
           command: echo "Running Accessibility Tests..."
           working_directory: with-jest-app
 
+  prepare-deployment:
+    executor: node/default
+    steps:
+      - checkout
+      - run:
+          name: Prepare Deployment Environment
+          command: echo "Preparing deployment environment..."
+
+  deploy-application:
+    executor: node/default
+    steps:
+      - checkout
+      - run:
+          name: Deploy Application
+          command: echo "Deploying application..."
+
+  verification-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - run:
+          name: Run Verification Tests
+          command: echo "Running verification tests..."
+
+  functional-validation-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - run:
+          name: Run Functional Validation Tests
+          command: echo "Running functional validation tests..."
+
+  load-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - run:
+          name: Run Load Tests
+          command: echo "Running load tests..."
+
+  deploy:
+    executor: node/default
+    steps:
+      - checkout
+      - run:
+          name: Deploy
+          command: echo "Final deployment step..."
+
+  monitoring:
+    executor: node/default
+    steps:
+      - checkout
+      - run:
+          name: Monitor and Follow-up
+          command: echo "Monitoring and follow-up..."
+
 workflows:
   version: 2
 
@@ -259,6 +315,55 @@ workflows:
       - accessibility-tests:
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - main
+      - prepare-deployment:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+      - deploy-application:
+          requires:
+            - prepare-deployment
+          filters:
+            branches:
+              only:
+                - main
+      - verification-tests:
+          requires:
+            - deploy-application
+          filters:
+            branches:
+              only:
+                - main
+      - functional-validation-tests:
+          requires:
+            - deploy-application
+          filters:
+            branches:
+              only:
+                - main
+      - load-tests:
+          requires:
+            - deploy-application
+          filters:
+            branches:
+              only:
+                - main
+      - deploy:
+          requires:
+            - load-tests
+          filters:
+            branches:
+              only:
+                - main
+      - monitoring:
+          requires:
+            - deploy
           filters:
             branches:
               only:
