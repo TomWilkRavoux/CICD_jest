@@ -142,6 +142,13 @@ workflows:
             branches:
               only:
                 - develop
+      - security-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
 
   integration_workflow:
     jobs:
@@ -165,6 +172,34 @@ workflows:
               only:
                 - integration
       - regression-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - integration
+      - performance-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - integration
+      - security-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - integration
+      - compatibility-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - integration
+      - accessibility-tests:
           requires:
             - build
           filters:
@@ -200,6 +235,34 @@ workflows:
             branches:
               only:
                 - main
+      - performance-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+      - security-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+      - compatibility-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+      - accessibility-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
 
   feature_workflow:
     jobs:
@@ -223,6 +286,17 @@ workflows:
                 - main
               only:
                 - /^feature.*/
+      - security-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore:
+                - develop
+                - integration
+                - main
+              only:
+                - /^feature.*/
 
   hotfix_workflow:
     jobs:
@@ -236,6 +310,17 @@ workflows:
               only:
                 - /^hotfix.*/
       - unit-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore:
+                - develop
+                - integration
+                - main
+              only:
+                - /^hotfix.*/
+      - security-tests:
           requires:
             - build
           filters:
