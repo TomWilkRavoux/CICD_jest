@@ -205,6 +205,41 @@ workflows:
             branches:
               only:
                 - develop
+      - prepare-staging:
+          requires:
+            - integration-tests
+          filters:
+            branches:
+              only:
+                - develop
+      - deploy-to-staging:
+          requires:
+            - prepare-staging
+          filters:
+            branches:
+              only:
+                - develop
+      - functional-validation-tests:
+          requires:
+            - deploy-to-staging
+          filters:
+            branches:
+              only:
+                - develop
+      - load-tests:
+          requires:
+            - deploy-to-staging
+          filters:
+            branches:
+              only:
+                - develop
+      - monitoring:
+          requires:
+            - load-tests
+          filters:
+            branches:
+              only:
+                - develop
 
   integration_workflow:
     jobs:
@@ -258,6 +293,41 @@ workflows:
       - accessibility-tests:
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - integration
+      - prepare-staging:
+          requires:
+            - compatibility-tests
+          filters:
+            branches:
+              only:
+                - integration
+      - deploy-to-staging:
+          requires:
+            - prepare-staging
+          filters:
+            branches:
+              only:
+                - integration
+      - functional-validation-tests:
+          requires:
+            - deploy-to-staging
+          filters:
+            branches:
+              only:
+                - integration
+      - load-tests:
+          requires:
+            - deploy-to-staging
+          filters:
+            branches:
+              only:
+                - integration
+      - monitoring:
+          requires:
+            - load-tests
           filters:
             branches:
               only:
