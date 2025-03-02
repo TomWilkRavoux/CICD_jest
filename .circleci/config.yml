@@ -26,16 +26,16 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: npm
-          app-dir: with-jest-app  # Spécifiez le répertoire de l'application
+          app-dir: with-jest-app
       - run:
           command: npm install jest-junit
-          working_directory: with-jest-app  # Changez le répertoire de travail
+          working_directory: with-jest-app
       - run:
           name: Run tests
           command: npm run test:ci
-          working_directory: with-jest-app  # Changez le répertoire de travail
+          working_directory: with-jest-app
       - store_test_results:
-          path: with-jest-app/test-results/  # Mettez à jour le chemin des résultats des tests
+          path: with-jest-app/test-results/
 workflows:
   version: 2
   build_and_test:
