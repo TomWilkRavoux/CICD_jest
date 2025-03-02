@@ -7,13 +7,7 @@ interface BlogPostData {
   title: string;
 }
 
-interface PageProps {
-  params: {
-    slug: string;
-  };
-}
-
-const Page: React.FC<PageProps> = ({ params }) => {
+export default function Page({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const [data, setData] = useState<BlogPostData | null>(null);
 
@@ -34,6 +28,4 @@ const Page: React.FC<PageProps> = ({ params }) => {
   }
 
   return <h1>{data.title}</h1>; // S'assurer que le heading est bien là
-};
-
-export default Page;
+}
