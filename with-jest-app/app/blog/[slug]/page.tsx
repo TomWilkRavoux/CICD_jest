@@ -7,8 +7,9 @@ interface BlogPostData {
   title: string;
 }
 
+// ✅ Correction : Supprimer `PageProps` et passer `{ params }` directement
 export default function Page({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+  const { slug } = params; // ✅ params est bien défini ici
   const [data, setData] = useState<BlogPostData | null>(null);
 
   useEffect(() => {
@@ -27,5 +28,5 @@ export default function Page({ params }: { params: { slug: string } }) {
     return <div>Loading...</div>;
   }
 
-  return <h1>{data.title}</h1>; // S'assurer que le heading est bien là
+  return <h1>{data.title}</h1>; // ✅ Vérifie bien que tu as un `<h1>`
 }

@@ -13,7 +13,7 @@ global.fetch = jest.fn(() =>
 ) as jest.Mock;
 
 it("App Router: Works with dynamic route segments", async () => {
-  render(<Page params={{ slug: "Test" }} />); // Correction : params est bien passé
+  render(<Page params={{ slug: "Test" }} />); // ✅ Correction : params bien passé
 
   // Attendre que le titre s'affiche après le chargement
   await waitFor(() => {
