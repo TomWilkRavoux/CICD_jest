@@ -6,7 +6,18 @@ jobs:
     executor: node/default
     steps:
       - checkout
+      - node/install-packages:
+          pkg-manager: npm
+          app-dir: with-jest-app
       - run: echo "Building things..."
+      - run:
+          name: Install Dependencies
+          command: npm install
+          working_directory: with-jest-app
+      - run:
+          name: Clean and Package
+          command: npm run build
+          working_directory: with-jest-app
   unit-tests:
     executor: node/default
     environment:
