@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@5
+
 jobs:
   build:
     executor: node/default
@@ -14,14 +15,11 @@ jobs:
           name: Install Dependencies
           command: npm install
           working_directory: with-jest-app
-      # - run:
-      #     name: Clean and Package
-      #     command: npm run build
-      #     working_directory: with-jest-app
+
   unit-tests:
     executor: node/default
     environment:
-      JEST_JUNIT_OUTPUT_DIR: ./test-results/
+      JEST_JUNIT_OUTPUT_DIR: ./test-results/unit
     steps:
       - checkout
       - node/install-packages:
@@ -31,16 +29,224 @@ jobs:
           command: npm install jest-junit
           working_directory: with-jest-app
       - run:
-          name: Run tests
-          command: npm run test:ci
+          name: Run Unit Tests
+          command: npm run test:unit
           working_directory: with-jest-app
       - store_test_results:
-          path: with-jest-app/test-results/
+          path: with-jest-app/test-results/unit
+
+  integration-tests:
+    executor: node/default
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: ./test-results/integration
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+          app-dir: with-jest-app
+      - run:
+          name: Run Integration Tests
+          command: npm run test:integration
+          working_directory: with-jest-app
+      - store_test_results:
+          path: with-jest-app/test-results/integration
+
+  regression-tests:
+    executor: node/default
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: ./test-results/regression
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+          app-dir: with-jest-app
+      - run:
+          name: Run Regression Tests
+          command: npm run test:regression
+          working_directory: with-jest-app
+      - store_test_results:
+          path: with-jest-app/test-results/regression
+
+  performance-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+          app-dir: with-jest-app
+      - run:
+          name: Run Performance Tests
+          command: npm run test:performance
+          working_directory: with-jest-app
+
+  security-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+          app-dir: with-jest-app
+      - run:
+          name: Run Security Tests
+          command: npm run test:security
+          working_directory: with-jest-app
+
+  compatibility-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+          app-dir: with-jest-app
+      - run:
+          name: Run Compatibility Tests
+          command: npm run test:compatibility
+          working_directory: with-jest-app
+
+  accessibility-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+          app-dir: with-jest-app
+      - run:
+          name: Run Accessibility Tests
+          command: npm run test:accessibility
+          working_directory: with-jest-app
+
 workflows:
   version: 2
-  build_and_test:
+
+  develop_workflow:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only:
+                - develop
       - unit-tests:
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - develop
+      - integration-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+      - regression-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+
+  integration_workflow:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - integration
+      - unit-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - integration
+      - integration-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - integration
+      - regression-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - integration
+
+  production_workflow:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - main
+      - unit-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+      - integration-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+      - regression-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+
+  feature_workflow:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - develop
+                - integration
+                - main
+              only:
+                - /^feature.*/
+      - unit-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore:
+                - develop
+                - integration
+                - main
+              only:
+                - /^feature.*/
+
+  hotfix_workflow:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - develop
+                - integration
+                - main
+              only:
+                - /^hotfix.*/
+      - unit-tests:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore:
+                - develop
+                - integration
+                - main
+              only:
+                - /^hotfix.*/
