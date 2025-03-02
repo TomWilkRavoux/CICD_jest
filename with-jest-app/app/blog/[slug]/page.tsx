@@ -1,19 +1,17 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+"use client"; // Obligatoire pour un Client Component
 
-interface Params {
-  slug: string;
-}
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation"; // Correct pour récupérer le slug depuis l'URL
 
 interface BlogPostData {
   title: string;
-  // Ajoutez d'autres propriétés si nécessaire
 }
 
 const Page: React.FC = () => {
-  const router = useRouter();
-  const slug = router.query.slug as string; // Assurez-vous que slug est une chaîne
-  const [data, setData] = useState<BlogPostData | null>(null); // Définissez le type de data
+  const pathname = usePathname(); // Récupère l'URL actuelle
+  const slug = pathname ? pathname.split("/").pop() : null; // Vérification si pathname existe
+
+  const [data, setData] = useState<BlogPostData | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
