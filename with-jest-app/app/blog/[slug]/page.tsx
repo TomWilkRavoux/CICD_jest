@@ -1,32 +1,37 @@
-import { GetStaticProps, GetStaticPaths } from 'next';
-import { ParsedUrlQuery } from 'querystring';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
-interface Params extends ParsedUrlQuery {
+interface Params {
   slug: string;
 }
 
-interface Props {
-  params: Params;
+interface BlogPostData {
+  title: string;
+  // Ajoutez d'autres propriétés si nécessaire
 }
 
-const Page: React.FC<Props> = ({ params }) => {
-  return <div>{params.slug}</div>;
-};
+const Page: React.FC = () => {
+  const router = useRouter();
+  const slug = router.query.slug as string; // Assurez-vous que slug est une chaîne
+  const [data, setData] = useState<BlogPostData | null>(null); // Définissez le type de data
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // Générez les chemins dynamiques ici
-  return {
-    paths: [], // Remplacez par vos chemins
-    fallback: false,
-  };
-};
+  useEffect(() => {
+    const fetchData = async () => {
+      if (slug) {
+        const response = await fetch(`/api/blog/${slug}`);
+        const result = await response.json();
+        setData(result);
+      }
+    };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  return {
-    props: {
-      params,
-    },
-  };
+    fetchData();
+  }, [slug]);
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
+  return <div>{data.title}</div>;
 };
 
 export default Page;
