@@ -1,0 +1,100 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.1.0
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - develop
+                - integration
+                - main
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+                - integration
+                - main
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - integration
+                - main
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:14
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Analyse de code
+          command: echo "Analyse de code en cours..."
+      - run:
+          name: Cleaning et Packaging
+          command: echo "Cleaning et Packaging en cours..."
+
+  test:
+    docker:
+      - image: circleci/node:14
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Tests unitaires
+          command: echo "Tests unitaires en cours..."
+      - run:
+          name: Tests d'intégration
+          command: echo "Tests d'intégration en cours..."
+      - run:
+          name: Tests de régression
+          command: echo "Tests de régression en cours..."
+      - run:
+          name: Tests de performance
+          command: echo "Tests de performance en cours..."
+      - run:
+          name: Tests de sécurité
+          command: echo "Tests de sécurité en cours..."
+      - run:
+          name: Tests de compatibilité
+          command: echo "Tests de compatibilité en cours..."
+      - run:
+          name: Tests d'accessibilité
+          command: echo "Tests d'accessibilité en cours..."
+
+  deploy:
+    docker:
+      - image: circleci/node:14
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Préparation de l'environnement de déploiement
+          command: echo "Préparation de l'environnement de déploiement en cours..."
+      - run:
+          name: Déploiement de l'application
+          command: echo "Déploiement de l'application en cours..."
+      - run:
+          name: Tests de vérification
+          command: echo "Tests de vérification en cours..."
+      - run:
+          name: Tests de validation fonctionnelle
+          command: echo "Tests de validation fonctionnelle en cours..."
+      - run:
+          name: Tests de charge
+          command: echo "Tests de charge en cours..."
+      - run:
+          name: Surveillance et suivi
+          command: echo "Surveillance et suivi en cours..."
